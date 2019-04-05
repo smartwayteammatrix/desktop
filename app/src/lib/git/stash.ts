@@ -1,6 +1,10 @@
 import { git } from '.'
 import { Repository } from '../../models/repository'
 import { GitError, IGitResult } from './core'
+import {
+  StashedFileChanges,
+  StashedChangesLoadStates,
+} from '../../models/stash'
 
 export const DesktopStashEntryMarker = '!!GitHub_Desktop'
 
@@ -13,6 +17,8 @@ export interface IStashEntry {
 
   /** The SHA of the commit object created as a result of stashing. */
   readonly stashSha: string
+
+  readonly files: StashedFileChanges
 }
 
 /** RegEx for parsing out the stash SHA and message */
@@ -85,6 +91,7 @@ export async function getDesktopStashEntries(
       name: `stash@{${ix}}`,
       branchName: branchName,
       stashSha: match[1],
+      files: StashedChangesLoadStates.NotLoaded,
     })
   }
 
